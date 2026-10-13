@@ -1,0 +1,51 @@
+package exercicios.desafio_chain;
+
+abstract class Suporte {
+    protected Suporte proximo;
+
+    public void setProximo(Suporte proximo) {
+        this.proximo = proximo;
+    }
+
+    public abstract void atender(String solicitacao);
+}
+
+class SuporteNivel1 extends Suporte {
+    @Override
+    public void atender(String solicitacao) {
+        if ("duvida_simples".equalsIgnoreCase(solicitacao)) {
+            System.out.println("Nível 1: Dúvida simples resolvida!");
+        } else if (proximo != null) {
+            System.out.println("Nível 1: Não consigo resolver. Passando para o Nível 2...");
+            proximo.atender(solicitacao);
+        }
+    }
+}
+
+class SuporteNivel2 extends Suporte {
+    @Override
+    public void atender(String solicitacao) {
+        if ("problema_tecnico".equalsIgnoreCase(solicitacao)) {
+            System.out.println("Nível 2: Problema técnico resolvido!");
+        } else if (proximo != null) {
+            proximo.atender(solicitacao);
+        } else {
+            System.out.println("Nenhum suporte pôde atender a solicitação: " + solicitacao);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Monta a corrente: Nível 1 -> Nível 2
+        Suporte nivel1 = new SuporteNivel1();
+        Suporte nivel2 = new SuporteNivel2();
+        nivel1.setProximo(nivel2);
+
+        System.out.println("--- Teste 1 ---");
+        nivel1.atender("duvida_simples");
+
+        System.out.println("\n--- Teste 2 ---");
+        nivel1.atender("problema_tecnico");
+    }
+}
